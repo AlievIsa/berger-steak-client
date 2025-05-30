@@ -1,61 +1,56 @@
 package com.alievisa.bergersteak
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.alievisa.bergersteak.ui.screens.aboutus.AboutUsScreen
+import com.alievisa.bergersteak.ui.screens.auth.AuthScreen
+import com.alievisa.bergersteak.ui.screens.basket.BasketScreen
+import com.alievisa.bergersteak.ui.screens.details.DetailsScreen
+import com.alievisa.bergersteak.ui.screens.dish.DishScreen
 
-import berger_steak_client.composeapp.generated.resources.Res
-import berger_steak_client.composeapp.generated.resources.compose_multiplatform
+import com.alievisa.bergersteak.ui.screens.main.MainScreen
+import com.alievisa.bergersteak.ui.screens.profile.ProfileScreen
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        val greeting = remember { Greeting().greet() }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Todays date is ${todaysDate()}",
-                modifier = Modifier.padding(20.dp),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-            )
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+        val navController = rememberNavController()
+        Box(modifier = Modifier.fillMaxSize().padding(bottom = getInsetBottom())) {
+            NavHost(
+                navController = navController,
+                startDestination = Screen.Main,
+            ) {
+                composable<Screen.Main> {
+                    MainScreen(navController)
+                }
+                composable<Screen.Basket> {
+                    BasketScreen(navController)
+                }
+                composable<Screen.Profile> {
+                    ProfileScreen(navController)
                 }
             }
         }
     }
-}
-
-fun todaysDate(): String {
-    fun LocalDateTime.format() = toString().substringBefore('T')
-
-    val now = Clock.System.now()
-    val zone = TimeZone.currentSystemDefault()
-    return now.toLocalDateTime(zone).format()
 }

@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Бёргер Стейк</string>
+    <string name="basket">Корзина</string>
+    <string name="details">Детали</string>
+    <string name="profile">Профиль</string>
+
+    <string name="dish_name">Название блюда</string>
+    <string name="further">Далее</string>
+
+    <string name="good_addition_to_order">Отлично подойдет к заказу</string>
+    <string name="to_order">К оформлению</string>
+
+    <string name="done">Готово</string>
+
+    <string name="halal_burger_cafe">Халяль бургерная</string>
+    <string name="halal_burger_cafe_description">Халяль - это эталонное соблюдение правил приготовления, которое позволяет предлагать посетителям вкусное и высококачественное блюдо. Заведение, сочетающее синтез традиций и новизны. Наша концепция – это мясные блюда ресторанного уровня по демократичным ценам!</string>
+    <string name="our_advantages">Наши преимущества</string>
+    <string name="advantages"> - Работаем 24 часа в сутки\n - Красивый интерьер и удобная мебель\n - Быстрое приготовление заказов</string>
+
+    <string name="expand">Развернуть</string>
+    <string name="shrink">Свернуть</string>
+
+    <string name="delete_all">Удалить все</string>
+
+    <string name="to_take_away">С собой</string>
+    <string name="to_the_table">К столу</string>
+
+    <string name="order_details">Детали заказа</string>
+    <string name="restaurant">Выберите заведение</string>
+    <string name="total">Итого</string>
+    <string name="pay">Оплатить</string>
+
+    <string name="number_of_orders">Всего заказов</string>
+    <string name="average_receipt">Средний чек</string>
+    <string name="order_history">История заказов</string>
+    <string name="order_amount">Сумма заказа</string>
+    <string name="date">Дата</string>
+
+    <string name="authorization">Авторизация</string>
+    <string name="by_number">По номеру</string>
+    <string name="by_email">По почте</string>
+    <string name="enter_number">Введите номер</string>
+    <string name="enter_email">Введите почту</string>
+    <string name="invalid_number">Неверный формат номера</string>
+    <string name="invalid_email">Неверный формат почты</string>
+    <string name="get_the_code">Получить код</string>
+    <string name="login_or_signup_with_number">Для совершения заказов необходимо авторизоваться\n\nМожете сделать это по номеру телефона, на который мы пришлем код подтверждения</string>
+    <string name="login_or_signup_with_mail">Для совершения заказов необходимо авторизоваться\n\nМожете сделать это по почте, на которую мы пришлем код подтверждения</string>
+
+    <string name="enter_code">Введите полученный код</string>
+    <string name="invalid_code">Неверный код</string>
+    <string name="id_code_is_not_received">Если код не пришел, можно повторить его отправку через</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="retry">Повторить отправку</string>
+
+    <string name="active_orders">Aктивный заказ</string>
+    <string name="order_created">Заказ создан</string>
+    <string name="order_processing">Заказ готовится</string>
+    <string name="order_done">Заказ готов</string>
+    <string name="order_canceled">Заказ отменен</string>
+    <string name="order_received">Заказ получен</string>
+
+    <string name="repeat_order">Повторить заказ</string>
+
+    <string name="exit">Выйти</string>
+
+    <string name="rub">₽</string>
+    <string name="gram">г</string>
+    <string name="cal">ккал</string>
+    <string name="sec">сек</string>
+
+    <string name="dish">Блюдо</string>
+    <string name="amount_short">Кол-во</string>
+    <string name="address">Адрес</string>
+
+    <string name="payment_success">Оплата прошла успешно</string>
+    <string name="payment_process">Оплата производится</string>
+    <string name="payment_failure">Оплата не прошла</string>
+</resources>
