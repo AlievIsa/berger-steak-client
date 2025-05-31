@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.alievisa.bergersteak.data.DishModel
-import com.alievisa.bergersteak.data.OrderModel
+import com.alievisa.bergersteak.domain.models.DishModel
+import com.alievisa.bergersteak.domain.models.OrderModel
 import com.alievisa.bergersteak.getScreenHeight
 import kotlinx.coroutines.launch
 

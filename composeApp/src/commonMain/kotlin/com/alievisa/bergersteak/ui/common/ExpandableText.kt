@@ -1,7 +1,6 @@
 package com.alievisa.bergersteak.ui.common
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +20,7 @@ import berger_steak_client.composeapp.generated.resources.Res
 import berger_steak_client.composeapp.generated.resources.expand
 import berger_steak_client.composeapp.generated.resources.shrink
 import com.alievisa.bergersteak.ui.theme.AppDefaults
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -57,7 +57,9 @@ fun ExpandableText(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .align(Alignment.End)
-                    .clickable { expanded = !expanded }
+                    .clickable(indication = ScaleIndication, interactionSource = null) {
+                        expanded = !expanded
+                    }
             )
         }
     }

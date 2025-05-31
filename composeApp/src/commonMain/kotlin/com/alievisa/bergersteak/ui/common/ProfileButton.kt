@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alievisa.bergersteak.ui.theme.AppDefaults
-import com.alievisa.bergersteak.utils.ScaleIndication
-import com.alievisa.bergersteak.utils.shimmerBackground
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
+import com.alievisa.bergersteak.ui.utils.shimmerBackground
 
 @Composable
 fun ProfileButton(

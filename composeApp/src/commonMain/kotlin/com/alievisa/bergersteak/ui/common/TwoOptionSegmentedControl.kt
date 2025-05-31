@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alievisa.bergersteak.ui.theme.AppDefaults
-import com.alievisa.bergersteak.utils.ScaleIndication
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
 
 @Composable
 fun TwoOptionSegmentedControl(

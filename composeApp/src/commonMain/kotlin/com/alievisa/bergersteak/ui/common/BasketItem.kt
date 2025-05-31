@@ -27,12 +27,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.alievisa.bergersteak.data.BasketItemModel
-import com.alievisa.bergersteak.data.DishModel
+import com.alievisa.bergersteak.domain.models.BasketItemModel
 import com.alievisa.bergersteak.ui.theme.AppDefaults
-import com.alievisa.bergersteak.utils.ScaleIndication
-import com.alievisa.bergersteak.utils.extensions.gram
-import com.alievisa.bergersteak.utils.extensions.rub
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
+import com.alievisa.bergersteak.ui.utils.extensions.gram
+import com.alievisa.bergersteak.ui.utils.extensions.rub
 
 @Composable
 fun BasketItem(
@@ -104,14 +103,16 @@ fun BasketItem(
 
                     Spacer(modifier.width(20.dp))
 
-                    Text(
-                        text = dishModel.weight.gram(),
-                        fontSize = 14.sp,
-                        color = Color.Gray,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                    )
+                    dishModel.weight?.let {
+                        Text(
+                            text = dishModel.weight.gram(),
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                        )
+                    }
                 }
 
 

@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.alievisa.bergersteak.data.DishModel
+import com.alievisa.bergersteak.domain.models.DishModel
 
 @Composable
 fun DishesList(

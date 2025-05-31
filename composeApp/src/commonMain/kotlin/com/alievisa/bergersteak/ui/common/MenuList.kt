@@ -2,7 +2,6 @@ package com.alievisa.bergersteak.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,10 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alievisa.bergersteak.data.DishModel
-import com.alievisa.bergersteak.data.MenuModel
-import com.alievisa.bergersteak.utils.ScaleIndication
-import com.alievisa.bergersteak.utils.extensions.roundUpDiv
+import com.alievisa.bergersteak.domain.models.DishModel
+import com.alievisa.bergersteak.domain.models.MenuModel
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
+import com.alievisa.bergersteak.ui.utils.extensions.roundUpDiv
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

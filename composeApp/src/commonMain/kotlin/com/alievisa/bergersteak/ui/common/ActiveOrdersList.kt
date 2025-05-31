@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +14,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -43,15 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import berger_steak_client.composeapp.generated.resources.Res
 import berger_steak_client.composeapp.generated.resources.active_orders
-import berger_steak_client.composeapp.generated.resources.done
 import berger_steak_client.composeapp.generated.resources.order_canceled
 import berger_steak_client.composeapp.generated.resources.order_created
 import berger_steak_client.composeapp.generated.resources.order_done
 import berger_steak_client.composeapp.generated.resources.order_processing
-import com.alievisa.bergersteak.data.OrderModel
-import com.alievisa.bergersteak.data.OrderStatus
+import com.alievisa.bergersteak.domain.models.OrderModel
+import com.alievisa.bergersteak.domain.models.OrderStatus
 import com.alievisa.bergersteak.ui.theme.AppDefaults
-import com.alievisa.bergersteak.utils.ScaleIndication
+import com.alievisa.bergersteak.ui.utils.ScaleIndication
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 

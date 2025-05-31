@@ -22,19 +22,19 @@ import berger_steak_client.composeapp.generated.resources.bag
 import berger_steak_client.composeapp.generated.resources.basket
 import berger_steak_client.composeapp.generated.resources.options
 import berger_steak_client.composeapp.generated.resources.to_order
-import com.alievisa.bergersteak.Screen
-import com.alievisa.bergersteak.data.MockUser
-import com.alievisa.bergersteak.data.basketMock
+import com.alievisa.bergersteak.domain.models.MockUser
+import com.alievisa.bergersteak.domain.models.basketMock
+import com.alievisa.bergersteak.ui.Screen
 import com.alievisa.bergersteak.ui.common.BasketItem
 import com.alievisa.bergersteak.ui.common.BottomSheetContent
 import com.alievisa.bergersteak.ui.common.DraggableBottomSheet
 import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.common.Toolbar
 import com.alievisa.bergersteak.ui.common.ToolbarButton
-import com.alievisa.bergersteak.ui.screens.auth.AuthScreen
-import com.alievisa.bergersteak.ui.screens.details.DetailsScreen
-import com.alievisa.bergersteak.ui.screens.dish.DishScreen
-import com.alievisa.bergersteak.utils.extensions.rub
+import com.alievisa.bergersteak.ui.sheets.AuthContent
+import com.alievisa.bergersteak.ui.sheets.DetailsContent
+import com.alievisa.bergersteak.ui.sheets.DishContent
+import com.alievisa.bergersteak.ui.utils.extensions.rub
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -103,22 +103,22 @@ fun BasketScreen(navController: NavController) {
     ) {
         when (val content = currentBottomSheetContent) {
             is BottomSheetContent.Dish -> {
-                DishScreen(
+                DishContent(
                     dishModel = content.dishModel,
                     showInBottomSheet = true,
                     onDoneClick = { currentBottomSheetContent = null }
                 )
             }
             is BottomSheetContent.OrderDetails -> {
-                DetailsScreen(
+                DetailsContent(
                     navController = navController,
                     basketModel = basketMock,
                     showInBottomSheet = true,
                 )
             }
             is BottomSheetContent.Authorization -> {
-                AuthScreen(
-                    navController = navController,
+                AuthContent(
+                    //navController = navController,
                     showInBottomSheet = true,
                     onSuccess = {
                         if (MockUser.data.name.isEmpty()) {
