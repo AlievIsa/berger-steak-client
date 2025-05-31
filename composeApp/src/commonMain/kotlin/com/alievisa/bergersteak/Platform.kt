@@ -7,6 +7,8 @@ interface Platform {
     val name: String
 }
 
+expect fun getLocalBaseUrl(): String
+
 expect fun getPlatform(): Platform
 
 @Composable

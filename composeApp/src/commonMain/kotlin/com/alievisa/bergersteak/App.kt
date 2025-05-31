@@ -9,22 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.alievisa.bergersteak.data.network.BergerSteakRemoteDataSource
-import com.alievisa.bergersteak.data.network.HttpClientFactory
-import com.alievisa.bergersteak.domain.BergerSteakRepository
 import com.alievisa.bergersteak.ui.Screen
 import com.alievisa.bergersteak.ui.screens.basket.BasketScreen
-
 import com.alievisa.bergersteak.ui.screens.main.MainScreen
 import com.alievisa.bergersteak.ui.screens.main.MainViewModel
 import com.alievisa.bergersteak.ui.screens.profile.ProfileScreen
-import io.ktor.client.engine.HttpClientEngine
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun App(
-    baseUrl: String,
-    engine: HttpClientEngine,
-) {
+fun App() {
     MaterialTheme {
         val navController = rememberNavController()
         Box(modifier = Modifier.fillMaxSize().padding(bottom = getInsetBottom())) {
@@ -34,14 +27,7 @@ fun App(
             ) {
                 composable<Screen.Main> {
                     MainScreen(
-                        viewModel = MainViewModel(
-                            repository = BergerSteakRepository(
-                                dataSource = BergerSteakRemoteDataSource(
-                                    baseUrl = baseUrl,
-                                    httpClient = HttpClientFactory.create(engine)
-                                )
-                            )
-                        ),
+                        viewModel = koinViewModel<MainViewModel>(),
                         navController = navController,
                     )
                 }
