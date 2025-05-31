@@ -19,15 +19,16 @@ class MainViewModel(
     val state = _state.asStateFlow()
 
     init {
-        loadData()
+        loadMenu()
+        collectBasket()
     }
 
-    private fun loadData() {
+    private fun loadMenu() {
         viewModelScope.launch {
             repository.getRemoteMenu().onSuccess { remoteMenu ->
                 _state.update {
                     it.copy(
-                        menuState = MenuState.Content(menuModel = remoteMenu)
+                        menuState = MenuState.Content(menuModel = remoteMenu),
                     )
                 }
                 repository.saveMenu(remoteMenu)
@@ -36,13 +37,13 @@ class MainViewModel(
                 if (localMenu.categories.isNotEmpty()) {
                     _state.update {
                         it.copy(
-                            menuState = MenuState.Content(menuModel = localMenu)
+                            menuState = MenuState.Content(menuModel = localMenu),
                         )
                     }
                 } else {
                     _state.update {
                         it.copy(
-                            menuState = MenuState.Error
+                            menuState = MenuState.Error,
                         )
                     }
                 }
@@ -53,14 +54,30 @@ class MainViewModel(
     fun onSearchQueryChanged(query: String) {
         _state.update {
             it.copy(
-                searchQuery = query
+                searchQuery = query,
             )
         }
     }
 
-    fun onAddDishClick(dishModel: DishModel) {
+    fun onAddDishClick(dishModel: DishModel, dishAmount: Int? = null) {
         viewModelScope.launch {
+            if (dishAmount != null) {
+                repository.setDishAmountInPosition(dishModel, dishAmount)
+            } else {
+                repository.increaseDishAmountInPosition(dishModel)
+            }
+        }
+    }
 
+    private fun collectBasket() {
+        viewModelScope.launch {
+            repository.getBasketFlow().collect { basketModel ->
+                _state.update {
+                    it.copy(
+                        basketModel = basketModel,
+                    )
+                }
+            }
         }
     }
 }

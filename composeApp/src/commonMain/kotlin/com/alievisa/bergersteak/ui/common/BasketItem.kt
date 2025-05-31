@@ -13,10 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,10 +32,11 @@ import com.alievisa.bergersteak.ui.utils.extensions.rub
 @Composable
 fun BasketItem(
     positionModel: PositionModel,
+    onIncreaseAmountClick: () -> Unit,
+    onDecreaseAmountClick: () -> Unit,
     onDishClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var quantity by remember { mutableStateOf(positionModel.dishAmount) }
     val dishModel = positionModel.dishModel
 
     Row (
@@ -120,9 +117,13 @@ fun BasketItem(
                 Spacer(modifier.width(20.dp))
 
                 QuantitySelector(
-                    value = quantity,
-                    onValueChange = {
-                        quantity = it
+                    value = positionModel.dishAmount,
+                    onValueChange = { newAmount ->
+                        if (newAmount > positionModel.dishAmount) {
+                            onIncreaseAmountClick()
+                        } else if (newAmount < positionModel.dishAmount) {
+                            onDecreaseAmountClick()
+                        }
                     },
                 )
             }

@@ -6,7 +6,7 @@ import com.alievisa.bergersteak.domain.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 
-class BergerSteakRemoteDataSource(
+class BergerSteakServer(
     private val baseUrl: String,
     private val httpClient: HttpClient,
 ) {

@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 @Entity
 data class PositionEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @SerialName("dish_id")
     val dishId: Int,
     @SerialName("dish_amount")

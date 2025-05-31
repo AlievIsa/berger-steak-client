@@ -6,13 +6,17 @@ import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.models.PositionModel
 
 fun List<PositionEntity>.toBasketModel(getDishById: (Int) -> DishModel): BasketModel {
+    var totalPrice = 0
     return BasketModel(
         positions = this.map { entity ->
+            val dishModel = getDishById(entity.dishId)
+            totalPrice += dishModel.price * entity.dishAmount
             PositionModel(
                 id = entity.id,
-                dishModel = getDishById(entity.dishId),
+                dishModel = dishModel,
                 dishAmount = entity.dishAmount
             )
-        }
+        },
+        totalPrice = totalPrice,
     )
 }

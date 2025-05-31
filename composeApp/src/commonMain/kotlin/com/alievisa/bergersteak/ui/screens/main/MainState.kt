@@ -1,12 +1,13 @@
 package com.alievisa.bergersteak.ui.screens.main
 
+import com.alievisa.bergersteak.domain.models.BasketModel
 import com.alievisa.bergersteak.domain.models.MenuModel
 
 data class MainState(
     val searchQuery: String = "",
-    val mainButtonState: MainButtonState = MainButtonState(),
     val menuState: MenuState = MenuState.Loading,
     val userState: UserState = UserState.Loading,
+    val basketModel: BasketModel = BasketModel(positions = emptyList(), totalPrice = 0),
 )
 
 sealed interface MenuState {
@@ -28,8 +29,3 @@ sealed interface UserState {
         val userModel: MenuModel?,
     ): UserState
 }
-
-data class MainButtonState(
-    val isVisible: Boolean = false,
-    val amount: Int = 0,
-)

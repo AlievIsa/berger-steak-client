@@ -82,7 +82,7 @@ fun MainScreen(
             currentBottomSheetContent = BottomSheetContent.Dish(dishModel)
         },
         onAddDishClick = { dishModel ->
-            viewModel
+            viewModel.onAddDishClick(dishModel)
         }
     )
 
@@ -94,8 +94,13 @@ fun MainScreen(
             is BottomSheetContent.Dish -> {
                 DishContent(
                     dishModel = content.dishModel,
+                    initialAmount = state.basketModel.positions
+                        .firstOrNull { it.dishModel.id == content.dishModel.id }?.dishAmount ?: 0,
                     showInBottomSheet = true,
-                    onDoneClick = { currentBottomSheetContent = null }
+                    onDoneClick = { dishAmount ->
+                        viewModel.onAddDishClick(content.dishModel, dishAmount)
+                        currentBottomSheetContent = null
+                    },
                 )
             }
             is BottomSheetContent.AboutUs -> {
@@ -209,7 +214,7 @@ fun MainScreenContent(
                             MenuList(
                                 menuModel = state.menuState.menuModel,
                                 menuScrollState = menuScrollState,
-                                isMainButtonVisible = state.mainButtonState.isVisible,
+                                isMainButtonVisible = state.basketModel.positions.isNotEmpty(),
                                 onDishClick = { dishModel ->
                                     focusManager.clearFocus()
                                     keyboardController?.hide()
@@ -219,18 +224,18 @@ fun MainScreenContent(
                                     focusManager.clearFocus()
                                     keyboardController?.hide()
                                     onAddDishClick(dishModel)
-                                }
+                                },
                             )
                         }
                     } else {
                         DishesList(
                             dishes = state.menuState.menuModel.toDishesList()
                                 .filter { it.name.contains(state.searchQuery, ignoreCase = true) },
-                            isMainButtonVisible = state.mainButtonState.isVisible
+                            isMainButtonVisible = state.basketModel.positions.isNotEmpty(),
                         )
                     }
 
-                    if (state.mainButtonState.isVisible) {
+                    if (state.basketModel.positions.isNotEmpty()) {
                         MainButton(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
@@ -238,7 +243,7 @@ fun MainScreenContent(
                                 .padding(bottom = 12.dp),
                             centerText = stringResource(Res.string.further),
                             leftIcon = vectorResource(Res.drawable.bag),
-                            rightText = state.mainButtonState.amount.rub(),
+                            rightText = state.basketModel.totalPrice.rub(),
                             onClick = {
                                 focusManager.clearFocus()
                                 keyboardController?.hide()

@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +25,10 @@ import berger_steak_client.composeapp.generated.resources.Res
 import berger_steak_client.composeapp.generated.resources.arrow_back
 import berger_steak_client.composeapp.generated.resources.bag
 import berger_steak_client.composeapp.generated.resources.basket
+import berger_steak_client.composeapp.generated.resources.delete_all
 import berger_steak_client.composeapp.generated.resources.options
 import berger_steak_client.composeapp.generated.resources.to_order
+import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.models.MockUser
 import com.alievisa.bergersteak.domain.models.PositionModel
 import com.alievisa.bergersteak.ui.Screen
@@ -55,7 +61,14 @@ fun BasketScreen(
             navController.popBackStack()
         },
         onDishClick = { positionModel ->
+            viewModel.onDoneDishClick(positionModel.dishModel, positionModel.dishAmount)
             currentBottomSheetContent = BottomSheetContent.Dish(positionModel.dishModel)
+        },
+        onIncreaseAmountClick = { dishModel ->
+            viewModel.onIncreaseDishAmountClick(dishModel)
+        },
+        onDecreaseAmountClick = { dishModel ->
+            viewModel.onDecreaseDishAmountClick(dishModel)
         },
         onMainButtonClick = {
             if (MockUser.isAuthorized) {
@@ -64,6 +77,9 @@ fun BasketScreen(
                 currentBottomSheetContent = BottomSheetContent.Authorization
             }
         },
+        onDeleteAllClick = {
+            viewModel.clearBasket()
+        }
     )
 
     DraggableBottomSheet(
@@ -74,8 +90,13 @@ fun BasketScreen(
             is BottomSheetContent.Dish -> {
                 DishContent(
                     dishModel = content.dishModel,
+                    initialAmount = state.basketModel.positions
+                        .firstOrNull { it.dishModel.id == content.dishModel.id }?.dishAmount ?: 0,
                     showInBottomSheet = true,
-                    onDoneClick = { currentBottomSheetContent = null }
+                    onDoneClick = { dishAmount ->
+                        viewModel.onDoneDishClick(content.dishModel, dishAmount)
+                        currentBottomSheetContent = null
+                    }
                 )
             }
             is BottomSheetContent.OrderDetails -> {
@@ -87,7 +108,6 @@ fun BasketScreen(
             }
             is BottomSheetContent.Authorization -> {
                 AuthContent(
-                    //navController = navController,
                     showInBottomSheet = true,
                     onSuccess = {
                         if (MockUser.data.name.isEmpty()) {
@@ -102,15 +122,32 @@ fun BasketScreen(
             else -> {}
         }
     }
+
+    var didSkipFirstEmpty by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state) {
+        if (didSkipFirstEmpty.not() && state.basketModel.positions.isEmpty()) {
+            didSkipFirstEmpty = true
+            return@LaunchedEffect
+        }
+
+        if (state.basketModel.positions.isEmpty()) {
+            navController.popBackStack()
+        }
+    }
 }
 
 @Composable
 fun BasketScreenContent(
     state: BasketState,
     onBackButtonClick: () -> Unit,
+    onIncreaseAmountClick: (DishModel) -> Unit,
+    onDecreaseAmountClick: (DishModel) -> Unit,
     onDishClick: (PositionModel) -> Unit,
     onMainButtonClick: () -> Unit,
+    onDeleteAllClick: () -> Unit,
 ) {
+    var isRightButtonExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -127,9 +164,25 @@ fun BasketScreenContent(
                 )
             },
             rightPart = {
-                ToolbarButton(
-                    icon = vectorResource(Res.drawable.options),
-                )
+                Box {
+                    ToolbarButton(
+                        icon = vectorResource(Res.drawable.options),
+                        onClick = { isRightButtonExpanded = true }
+                    )
+                    DropdownMenu(
+                        expanded = isRightButtonExpanded,
+                        onDismissRequest = { isRightButtonExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            onClick = {
+                                onDeleteAllClick()
+                                isRightButtonExpanded = false
+                            }
+                        ) {
+                            Text(stringResource(Res.string.delete_all))
+                        }
+                    }
+                }
             },
         )
 
@@ -140,6 +193,8 @@ fun BasketScreenContent(
                 items(state.basketModel.positions) { positionModel ->
                     BasketItem(
                         positionModel = positionModel,
+                        onIncreaseAmountClick = { onIncreaseAmountClick(positionModel.dishModel) },
+                        onDecreaseAmountClick = { onDecreaseAmountClick(positionModel.dishModel) },
                         onDishClick = { onDishClick(positionModel) }
                     )
                 }
@@ -152,7 +207,7 @@ fun BasketScreenContent(
                     .padding(bottom = 12.dp),
                 centerText = stringResource(Res.string.to_order),
                 leftIcon = vectorResource(Res.drawable.bag),
-                rightText = 500.rub(),
+                rightText = state.basketModel.totalPrice.rub(),
                 onClick = { onMainButtonClick() }
             )
         }

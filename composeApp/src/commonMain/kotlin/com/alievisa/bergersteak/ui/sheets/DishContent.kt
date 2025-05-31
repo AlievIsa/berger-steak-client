@@ -45,16 +45,17 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun DishContent(
     dishModel: DishModel,
+    initialAmount: Int = 0,
     showInBottomSheet: Boolean = false,
-    onDoneClick: () -> Unit,
+    onDoneClick: (Int) -> Unit,
 ) {
     val mainModifier = if (showInBottomSheet) {
         Modifier.wrapContentHeight().fillMaxWidth()
     } else {
         Modifier.fillMaxSize()
     }
-    var quantity by remember { mutableStateOf(0) }
-    val currentPrice = quantity * dishModel.price
+    var currentAmount by remember { mutableStateOf(initialAmount) }
+    val currentPrice = currentAmount * dishModel.price
     val hasPrice = currentPrice > 0
     val paddingEnd by animateDpAsState(
         targetValue = if (hasPrice) 50.dp else 0.dp,
@@ -142,9 +143,9 @@ fun DishContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 QuantitySelector(
-                    value = quantity,
+                    value = currentAmount,
                     onValueChange = {
-                        quantity = it
+                        currentAmount = it
                     },
                 )
 
@@ -157,7 +158,7 @@ fun DishContent(
                             indication = ScaleIndication,
                             interactionSource = null
                         ) {
-                            onDoneClick()
+                            onDoneClick(currentAmount)
                         }
                         .clip(RoundedCornerShape(8.dp))
                         .background(

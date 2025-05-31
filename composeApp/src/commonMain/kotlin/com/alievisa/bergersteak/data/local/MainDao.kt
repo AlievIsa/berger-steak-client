@@ -33,11 +33,17 @@ interface MainDao {
     @Query("SELECT * FROM PositionEntity WHERE dishId = :dishId LIMIT 1")
     suspend fun getPositionByDishId(dishId: Int): PositionEntity?
 
-    @Query("SELECT * FROM PositionEntity")
-    fun getBasketPositions(): Flow<List<PositionEntity>>
+    @Query("DELETE FROM PositionEntity WHERE id = :id")
+    suspend fun deletePositionById(id: Int)
+
+    @Query("DELETE FROM PositionEntity WHERE dishId = :dishId")
+    suspend fun deletePositionByDishId(dishId: Int)
 
     @Delete
     suspend fun deletePosition(position: PositionEntity)
+
+    @Query("SELECT * FROM PositionEntity")
+    fun getBasketPositions(): Flow<List<PositionEntity>>
 
     @Query("DELETE FROM PositionEntity")
     suspend fun clearBasket()

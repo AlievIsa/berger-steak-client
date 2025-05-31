@@ -49,14 +49,12 @@ fun MainButton(
                         .background(
                             brush = AppDefaults.Brushes.verticalBrownLight
                         )
-                        .padding(horizontal = 16.dp)
                 } else {
                     Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .shimmerBackground(
                             mainColor = Color.Gray,
                         )
-                        .padding(horizontal = 16.dp)
                 }
             )
             .padding(horizontal = 16.dp),
@@ -71,7 +69,7 @@ fun MainButton(
                 )
             }
         }
-        Box(modifier = Modifier.weight(4f), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.weight(3f), contentAlignment = Alignment.Center) {
             Text(
                 text = centerText,
                 fontWeight = FontWeight.Bold,

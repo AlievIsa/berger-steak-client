@@ -62,8 +62,6 @@ fun MenuList(
         categoryModel.id to previousDishesAmount
     }.toMap()
 
-    println(categoryOffsets)
-
     val categoryOffsetList = categoryOffsets.entries.sortedBy { it.value }
 
     LaunchedEffect(menuScrollState.firstVisibleItemIndex) {
