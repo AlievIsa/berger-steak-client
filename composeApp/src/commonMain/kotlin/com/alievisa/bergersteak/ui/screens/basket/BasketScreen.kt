@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import berger_steak_client.composeapp.generated.resources.Res
 import berger_steak_client.composeapp.generated.resources.arrow_back
@@ -23,7 +24,7 @@ import berger_steak_client.composeapp.generated.resources.basket
 import berger_steak_client.composeapp.generated.resources.options
 import berger_steak_client.composeapp.generated.resources.to_order
 import com.alievisa.bergersteak.domain.models.MockUser
-import com.alievisa.bergersteak.domain.models.basketMock
+import com.alievisa.bergersteak.domain.models.PositionModel
 import com.alievisa.bergersteak.ui.Screen
 import com.alievisa.bergersteak.ui.common.BasketItem
 import com.alievisa.bergersteak.ui.common.BottomSheetContent
@@ -37,65 +38,33 @@ import com.alievisa.bergersteak.ui.sheets.DishContent
 import com.alievisa.bergersteak.ui.utils.extensions.rub
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BasketScreen(navController: NavController) {
-    val basketModel = basketMock
+fun BasketScreen(
+    viewModel: BasketViewModel = koinViewModel(),
+    navController: NavController,
+) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
     var currentBottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Toolbar(
-            title = stringResource(Res.string.basket),
-            leftPart = {
-                ToolbarButton(
-                    icon = vectorResource(Res.drawable.arrow_back),
-                    onClick = {
-                        navController.popBackStack()
-                    }
-                )
-            },
-            rightPart = {
-                ToolbarButton(
-                    icon = vectorResource(Res.drawable.options),
-                )
-            },
-        )
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(20.dp)
-            ) {
-                items(basketModel.items) { basketItemModel ->
-                    BasketItem(
-                        basketItemModel = basketItemModel,
-                        onDishClick = {
-                            currentBottomSheetContent = BottomSheetContent.Dish(basketItemModel.dishModel)
-                        }
-                    )
-                }
+    BasketScreenContent(
+        state = state,
+        onBackButtonClick = {
+            navController.popBackStack()
+        },
+        onDishClick = { positionModel ->
+            currentBottomSheetContent = BottomSheetContent.Dish(positionModel.dishModel)
+        },
+        onMainButtonClick = {
+            if (MockUser.isAuthorized) {
+                currentBottomSheetContent = BottomSheetContent.OrderDetails
+            } else {
+                currentBottomSheetContent = BottomSheetContent.Authorization
             }
-
-            MainButton(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 12.dp),
-                centerText = stringResource(Res.string.to_order),
-                leftIcon = vectorResource(Res.drawable.bag),
-                rightText = 500.rub(),
-                onClick = {
-                    if (MockUser.isAuthorized) {
-                        currentBottomSheetContent = BottomSheetContent.OrderDetails
-                    } else {
-                        currentBottomSheetContent = BottomSheetContent.Authorization
-                    }
-                }
-            )
-        }
-    }
+        },
+    )
 
     DraggableBottomSheet(
         isVisible = currentBottomSheetContent != null,
@@ -112,7 +81,7 @@ fun BasketScreen(navController: NavController) {
             is BottomSheetContent.OrderDetails -> {
                 DetailsContent(
                     navController = navController,
-                    basketModel = basketMock,
+                    basketModel = state.basketModel,
                     showInBottomSheet = true,
                 )
             }
@@ -131,6 +100,61 @@ fun BasketScreen(navController: NavController) {
                 )
             }
             else -> {}
+        }
+    }
+}
+
+@Composable
+fun BasketScreenContent(
+    state: BasketState,
+    onBackButtonClick: () -> Unit,
+    onDishClick: (PositionModel) -> Unit,
+    onMainButtonClick: () -> Unit,
+) {
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Toolbar(
+            title = stringResource(Res.string.basket),
+            leftPart = {
+                ToolbarButton(
+                    icon = vectorResource(Res.drawable.arrow_back),
+                    onClick = {
+                        onBackButtonClick()
+                    }
+                )
+            },
+            rightPart = {
+                ToolbarButton(
+                    icon = vectorResource(Res.drawable.options),
+                )
+            },
+        )
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().padding(20.dp)
+            ) {
+                items(state.basketModel.positions) { positionModel ->
+                    BasketItem(
+                        positionModel = positionModel,
+                        onDishClick = { onDishClick(positionModel) }
+                    )
+                }
+            }
+
+            MainButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 12.dp),
+                centerText = stringResource(Res.string.to_order),
+                leftIcon = vectorResource(Res.drawable.bag),
+                rightText = 500.rub(),
+                onClick = { onMainButtonClick() }
+            )
         }
     }
 }

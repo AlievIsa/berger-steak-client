@@ -3,6 +3,7 @@ package com.alievisa.bergersteak.ui.screens.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alievisa.bergersteak.domain.BergerSteakRepository
+import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.onError
 import com.alievisa.bergersteak.domain.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val repository: BergerSteakRepository
+    private val repository: BergerSteakRepository,
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(MainScreenState())
+    private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
     init {
@@ -23,17 +24,27 @@ class MainViewModel(
 
     private fun loadData() {
         viewModelScope.launch {
-            repository.getMenu().onSuccess { result ->
+            repository.getRemoteMenu().onSuccess { remoteMenu ->
                 _state.update {
                     it.copy(
-                        menuState = MenuState.Content(menuModel = result)
+                        menuState = MenuState.Content(menuModel = remoteMenu)
                     )
                 }
+                repository.saveMenu(remoteMenu)
             }.onError {
-                _state.update {
-                    it.copy(
-                        menuState = MenuState.Error
-                    )
+                val localMenu = repository.getLocalMenu()
+                if (localMenu.categories.isNotEmpty()) {
+                    _state.update {
+                        it.copy(
+                            menuState = MenuState.Content(menuModel = localMenu)
+                        )
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            menuState = MenuState.Error
+                        )
+                    }
                 }
             }
         }
@@ -44,6 +55,12 @@ class MainViewModel(
             it.copy(
                 searchQuery = query
             )
+        }
+    }
+
+    fun onAddDishClick(dishModel: DishModel) {
+        viewModelScope.launch {
+
         }
     }
 }

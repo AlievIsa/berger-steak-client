@@ -1,5 +1,8 @@
 package com.alievisa.bergersteak.di
 
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.alievisa.bergersteak.data.local.BergerSteakDatabase
+import com.alievisa.bergersteak.data.local.DatabaseFactory
 import com.alievisa.bergersteak.data.network.BergerSteakRemoteDataSource
 import com.alievisa.bergersteak.data.network.HttpClientFactory
 import com.alievisa.bergersteak.domain.BergerSteakRepository
@@ -16,6 +19,14 @@ val sharedModule = module {
     singleOf(HttpClientFactory::create)
     single { BergerSteakRemoteDataSource(baseUrl = getLocalBaseUrl(), httpClient = get()) }
     singleOf(::BergerSteakRepository)
+
+    single {
+        get<DatabaseFactory>().create()
+            .setDriver(BundledSQLiteDriver())
+            .build()
+    }
+
+    single { get<BergerSteakDatabase>().mainDao }
 
     viewModelOf(::MainViewModel)
 }

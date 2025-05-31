@@ -46,7 +46,7 @@ fun MenuList(
     menuScrollState: LazyListState,
     isMainButtonVisible: Boolean,
     onDishClick: (DishModel) -> Unit,
-    onAddDishClick: () -> Unit,
+    onAddDishClick: (DishModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -55,11 +55,11 @@ fun MenuList(
     val isCustomScrollAnimating = remember { mutableStateOf(false) }
 
     var previousDishesAmount = 0
-    val categoryOffsets = menuModel.categories.mapIndexed { index, category ->
+    val categoryOffsets = menuModel.categories.mapIndexed { index, categoryModel ->
         if (index != 0) {
             previousDishesAmount += menuModel.categories[index - 1].dishes.size.roundUpDiv(2) + 1
         }
-        category.id to previousDishesAmount
+        categoryModel.id to previousDishesAmount
     }.toMap()
 
     println(categoryOffsets)
@@ -102,7 +102,7 @@ fun MenuList(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
-            itemsIndexed(menuModel.categories) { index, category ->
+            itemsIndexed(menuModel.categories) { index, categoryModel ->
                 val selected = selectedTabState.value == index
 
                 Box(
@@ -114,7 +114,7 @@ fun MenuList(
                             isCustomScrollAnimating.value = true
                             selectedTabState.value = index
                             coroutineScope.launch {
-                                menuScrollState.animateScrollToItem(categoryOffsets[category.id] ?: 0)
+                                menuScrollState.animateScrollToItem(categoryOffsets[categoryModel.id] ?: 0)
                                 delay(100)
                                 isCustomScrollAnimating.value = false
                             }
@@ -128,7 +128,7 @@ fun MenuList(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = category.name,
+                        text = categoryModel.name,
                         color = if (selected) Color.White else Color.Black,
                         fontSize = 14.sp,
                         lineHeight = 14.sp,
@@ -145,11 +145,11 @@ fun MenuList(
                 .padding(top = 12.dp),
             state = menuScrollState
         ) {
-            menuModel.categories.forEach { category ->
+            menuModel.categories.forEach { categoryModel ->
 
                 item {
                     Text(
-                        text = category.name,
+                        text = categoryModel.name,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -160,16 +160,16 @@ fun MenuList(
                     )
                 }
 
-                items(category.dishes.chunked(2)) { row ->
+                items(categoryModel.dishes.chunked(2)) { row ->
                     Row(
                         Modifier
                             .padding(horizontal = 12.dp)
                     ) {
-                        row.forEach { dish ->
+                        row.forEach { dishModel ->
                             MenuItem(
-                                dishModel = dish,
-                                onDishClick = { onDishClick(dish) },
-                                onAddDishClick = { onAddDishClick() },
+                                dishModel = dishModel,
+                                onDishClick = { onDishClick(dishModel) },
+                                onAddDishClick = { onAddDishClick(dishModel) },
                                 modifier = Modifier.weight(1f)
                             )
                         }

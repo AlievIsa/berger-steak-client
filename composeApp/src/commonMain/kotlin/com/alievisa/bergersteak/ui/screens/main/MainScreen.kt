@@ -26,8 +26,11 @@ import berger_steak_client.composeapp.generated.resources.app_name
 import berger_steak_client.composeapp.generated.resources.bag
 import berger_steak_client.composeapp.generated.resources.burger_logo
 import berger_steak_client.composeapp.generated.resources.further
+import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.models.MockUser
+import com.alievisa.bergersteak.domain.models.OrderModel
 import com.alievisa.bergersteak.domain.models.toDishesList
+import com.alievisa.bergersteak.ui.Screen
 import com.alievisa.bergersteak.ui.common.ActiveOrdersList
 import com.alievisa.bergersteak.ui.common.BottomSheetContent
 import com.alievisa.bergersteak.ui.common.CollapsingSearchToolbar
@@ -54,20 +57,89 @@ fun MainScreen(
     navController: NavController,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var currentBottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
 
     MainScreenContent(
         state = state,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onProfileButtonClick = {
+            if (MockUser.isAuthorized) {
+                navController.navigate(Screen.Profile)
+            } else {
+                currentBottomSheetContent = BottomSheetContent.Authorization
+            }
+        },
+        onBurgerButtonClick = {
+            currentBottomSheetContent = BottomSheetContent.AboutUs
+        },
+        onMainButtonClick = {
+            navController.navigate(Screen.Basket)
+        },
+        onOrderClick = { orderModel ->
+            currentBottomSheetContent = BottomSheetContent.OrderInfo(orderModel)
+        },
+        onDishClick = { dishModel ->
+            currentBottomSheetContent = BottomSheetContent.Dish(dishModel)
+        },
+        onAddDishClick = { dishModel ->
+            viewModel
+        }
     )
+
+    DraggableBottomSheet(
+        isVisible = currentBottomSheetContent != null,
+        onDismiss = { currentBottomSheetContent = null }
+    ) {
+        when (val content = currentBottomSheetContent) {
+            is BottomSheetContent.Dish -> {
+                DishContent(
+                    dishModel = content.dishModel,
+                    showInBottomSheet = true,
+                    onDoneClick = { currentBottomSheetContent = null }
+                )
+            }
+            is BottomSheetContent.AboutUs -> {
+                AboutUsContent(
+                    showInBottomSheet = true,
+                )
+            }
+            is BottomSheetContent.Authorization -> {
+                AuthContent(
+                    showInBottomSheet = true,
+                    onSuccess = {
+                        if (MockUser.data.name.isEmpty()) {
+                            navController.navigate(Screen.Profile)
+                        } else {
+                            currentBottomSheetContent = null
+                        }
+                        MockUser.isAuthorized = true
+
+                    }
+                )
+            }
+            is BottomSheetContent.OrderInfo -> {
+                OrderInfoScreen(
+                    orderModel = content.orderModel,
+                    showInBottomSheet = true,
+                )
+            }
+            else -> {}
+        }
+    }
 }
 
 @Composable
 fun MainScreenContent(
-    state: MainScreenState,
+    state: MainState,
     onSearchQueryChanged: (String) -> Unit,
+    onProfileButtonClick: () -> Unit,
+    onBurgerButtonClick: () -> Unit,
+    onMainButtonClick: () -> Unit,
+    onOrderClick: (OrderModel) -> Unit,
+    onDishClick: (DishModel) -> Unit,
+    onAddDishClick: (DishModel) -> Unit,
 ) {
 
-    var currentBottomSheetContent by remember { mutableStateOf<BottomSheetContent?>(null) }
     val menuScrollState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -90,11 +162,7 @@ fun MainScreenContent(
                     onClick = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        if (MockUser.isAuthorized) {
-                            //navController.navigate(Screen.Profile)
-                        } else {
-                            currentBottomSheetContent = BottomSheetContent.Authorization
-                        }
+                        onProfileButtonClick()
                     }
                 )
             },
@@ -104,7 +172,7 @@ fun MainScreenContent(
                     onClick = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        currentBottomSheetContent = BottomSheetContent.AboutUs
+                        onBurgerButtonClick()
                     }
                 )
             },
@@ -132,7 +200,9 @@ fun MainScreenContent(
                                 ActiveOrdersList(
                                     orders = MockUser.data.orders,
                                     onOrderClick = { orderModel ->
-                                        currentBottomSheetContent = BottomSheetContent.OrderInfo(orderModel)
+                                        focusManager.clearFocus()
+                                        keyboardController?.hide()
+                                        onOrderClick(orderModel)
                                     }
                                 )
                             }
@@ -143,11 +213,12 @@ fun MainScreenContent(
                                 onDishClick = { dishModel ->
                                     focusManager.clearFocus()
                                     keyboardController?.hide()
-                                    currentBottomSheetContent = BottomSheetContent.Dish(dishModel)
+                                    onDishClick(dishModel)
                                 },
-                                onAddDishClick = {
+                                onAddDishClick = { dishModel ->
                                     focusManager.clearFocus()
                                     keyboardController?.hide()
+                                    onAddDishClick(dishModel)
                                 }
                             )
                         }
@@ -171,7 +242,7 @@ fun MainScreenContent(
                             onClick = {
                                 focusManager.clearFocus()
                                 keyboardController?.hide()
-                                //navController.navigate(Screen.Basket)
+                                onMainButtonClick()
                             }
                         )
                     }
@@ -183,47 +254,6 @@ fun MainScreenContent(
                     Text(text = "Ошибка")
                 }
             }
-        }
-    }
-
-    DraggableBottomSheet(
-        isVisible = currentBottomSheetContent != null,
-        onDismiss = { currentBottomSheetContent = null }
-    ) {
-        when (val content = currentBottomSheetContent) {
-            is BottomSheetContent.Dish -> {
-                DishContent(
-                    dishModel = content.dishModel,
-                    showInBottomSheet = true,
-                    onDoneClick = { currentBottomSheetContent = null }
-                )
-            }
-            is BottomSheetContent.AboutUs -> {
-                AboutUsContent(
-                    showInBottomSheet = true,
-                )
-            }
-            is BottomSheetContent.Authorization -> {
-                AuthContent(
-                    showInBottomSheet = true,
-                    onSuccess = {
-                        if (MockUser.data.name.isEmpty()) {
-                            //navController.navigate(Screen.Profile)
-                        } else {
-                            currentBottomSheetContent = null
-                        }
-                        MockUser.isAuthorized = true
-
-                    }
-                )
-            }
-            is BottomSheetContent.OrderInfo -> {
-                OrderInfoScreen(
-                    orderModel = content.orderModel,
-                    showInBottomSheet = true,
-                )
-            }
-            else -> {}
         }
     }
 }

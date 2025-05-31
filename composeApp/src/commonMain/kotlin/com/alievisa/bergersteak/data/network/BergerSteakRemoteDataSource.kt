@@ -1,6 +1,6 @@
 package com.alievisa.bergersteak.data.network
 
-import com.alievisa.bergersteak.data.dto.MenuResponse
+import com.alievisa.bergersteak.data.network.dto.MenuResponse
 import com.alievisa.bergersteak.domain.DataError
 import com.alievisa.bergersteak.domain.Result
 import io.ktor.client.HttpClient

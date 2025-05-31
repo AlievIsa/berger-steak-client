@@ -1,6 +1,5 @@
-package com.alievisa.bergersteak.data.dto
+package com.alievisa.bergersteak.data.network.dto
 
-import com.alievisa.bergersteak.domain.models.DishModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,15 +14,4 @@ data class DishResponse(
     val image: String?,
     val weight: Int?,
     val calories: Int?,
-)
-
-fun DishResponse.toModel() = DishModel(
-    id = id,
-    categoryId = categoryId,
-    name = name,
-    price = price,
-    description = description,
-    image = image,
-    weight = weight,
-    calories = calories,
 )

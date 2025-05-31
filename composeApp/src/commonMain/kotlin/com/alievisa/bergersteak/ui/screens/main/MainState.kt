@@ -2,7 +2,7 @@ package com.alievisa.bergersteak.ui.screens.main
 
 import com.alievisa.bergersteak.domain.models.MenuModel
 
-data class MainScreenState(
+data class MainState(
     val searchQuery: String = "",
     val mainButtonState: MainButtonState = MainButtonState(),
     val menuState: MenuState = MenuState.Loading,

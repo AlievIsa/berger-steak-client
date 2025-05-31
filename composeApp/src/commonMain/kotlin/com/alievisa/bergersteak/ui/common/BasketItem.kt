@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.alievisa.bergersteak.domain.models.BasketItemModel
+import com.alievisa.bergersteak.domain.models.PositionModel
 import com.alievisa.bergersteak.ui.theme.AppDefaults
 import com.alievisa.bergersteak.ui.utils.ScaleIndication
 import com.alievisa.bergersteak.ui.utils.extensions.gram
@@ -35,12 +35,12 @@ import com.alievisa.bergersteak.ui.utils.extensions.rub
 
 @Composable
 fun BasketItem(
-    basketItemModel: BasketItemModel,
+    positionModel: PositionModel,
     onDishClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var quantity by remember { mutableStateOf(basketItemModel.amount) }
-    val dishModel = basketItemModel.dishModel
+    var quantity by remember { mutableStateOf(positionModel.dishAmount) }
+    val dishModel = positionModel.dishModel
 
     Row (
         modifier = modifier

@@ -1,6 +1,5 @@
-package com.alievisa.bergersteak.data.dto
+package com.alievisa.bergersteak.data.network.dto
 
-import com.alievisa.bergersteak.domain.models.MenuModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,8 +10,4 @@ data class MenuResponse(
 @Serializable
 data class CategoriesResponse(
     val categories: List<CategoryResponse>,
-)
-
-fun MenuResponse.toModel() = MenuModel(
-    categories = menu.categories.map { it.toModel() }
 )

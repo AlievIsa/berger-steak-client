@@ -27,14 +27,11 @@ import berger_steak_client.composeapp.generated.resources.order_amount
 import berger_steak_client.composeapp.generated.resources.repeat_order
 import com.alievisa.bergersteak.domain.models.OrderModel
 import com.alievisa.bergersteak.domain.models.OrderStatus.Companion.getStatusStringRes
-import com.alievisa.bergersteak.domain.models.dishesListMock
-import com.alievisa.bergersteak.domain.models.findDishById
 import com.alievisa.bergersteak.domain.models.findRestaurantById
 import com.alievisa.bergersteak.domain.models.mockRestaurants
 import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.utils.extensions.formatAsReadableDate
 import com.alievisa.bergersteak.ui.utils.extensions.rub
-
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -85,12 +82,12 @@ fun OrderInfoScreen(
             )
         }
 
-        orderModel.positions.forEach { position ->
+        orderModel.positions.forEach { positionModel ->
             Spacer(modifier = Modifier.height(10.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                val dish = dishesListMock.findDishById(position.dishId)
+                val dishModel = positionModel.dishModel
                 Text(
-                    text = dish?.name.toString(),
+                    text = dishModel.name,
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
@@ -98,7 +95,7 @@ fun OrderInfoScreen(
                     modifier = Modifier.weight(4f),
                 )
                 Text(
-                    text = position.dishAmount.toString(),
+                    text = positionModel.dishAmount.toString(),
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
