@@ -1,5 +1,10 @@
 package com.alievisa.bergersteak.ui.screens.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -162,8 +167,8 @@ fun MainScreenContent(
             listState = menuScrollState,
             leftButton = {
                 ProfileButton(
-                    userName = if (MockUser.isAuthorized) "Иса Алиев" else "?",
-                    isLoading = state.userState == UserState.Loading,
+                    userName = state.userState.userModel?.name,
+                    isLoading = state.userState.isLoading,
                     onClick = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
@@ -235,10 +240,14 @@ fun MainScreenContent(
                         )
                     }
 
-                    if (state.basketModel.positions.isNotEmpty()) {
+                    this@Column.AnimatedVisibility(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        visible = state.basketModel.positions.isNotEmpty(),
+                        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+                    ) {
                         MainButton(
                             modifier = Modifier
-                                .align(Alignment.BottomCenter)
                                 .padding(horizontal = 20.dp)
                                 .padding(bottom = 12.dp),
                             centerText = stringResource(Res.string.further),

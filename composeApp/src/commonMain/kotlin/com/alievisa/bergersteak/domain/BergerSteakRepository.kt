@@ -10,6 +10,7 @@ import com.alievisa.bergersteak.domain.models.CategoryModel
 import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.models.MenuModel
 import com.alievisa.bergersteak.domain.models.PositionModel
+import com.alievisa.bergersteak.domain.models.RestaurantModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -83,6 +84,10 @@ class BergerSteakRepository(
 
     suspend fun clearBasket() {
         dao.clearBasket()
+    }
+
+    suspend fun getRestaurants(): Result<List<RestaurantModel>, DataError.Remote> {
+        return server.getRestaurants().map { it.toModel() }
     }
 }
 

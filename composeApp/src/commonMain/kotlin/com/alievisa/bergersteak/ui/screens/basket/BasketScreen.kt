@@ -104,6 +104,12 @@ fun BasketScreen(
                     navController = navController,
                     basketModel = state.basketModel,
                     showInBottomSheet = true,
+                    restaurants = state.restaurants,
+                    onPayButtonClick = {
+                        navController.navigate(Screen.Main) {
+                            popUpTo(Screen.Main) { inclusive = true }
+                        }
+                    }
                 )
             }
             is BottomSheetContent.Authorization -> {

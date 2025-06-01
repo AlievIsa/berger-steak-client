@@ -1,6 +1,7 @@
 package com.alievisa.bergersteak.data.network
 
 import com.alievisa.bergersteak.data.network.dto.MenuResponse
+import com.alievisa.bergersteak.data.network.dto.RestaurantsResponse
 import com.alievisa.bergersteak.domain.DataError
 import com.alievisa.bergersteak.domain.Result
 import io.ktor.client.HttpClient
@@ -15,6 +16,14 @@ class BergerSteakServer(
         return safeCall {
             httpClient.get(
                 urlString = "$baseUrl/v1/get-menu"
+            )
+        }
+    }
+
+    suspend fun getRestaurants(): Result<RestaurantsResponse, DataError.Remote> {
+        return safeCall {
+            httpClient.get(
+                urlString = "$baseUrl/v1/get-restaurants"
             )
         }
     }

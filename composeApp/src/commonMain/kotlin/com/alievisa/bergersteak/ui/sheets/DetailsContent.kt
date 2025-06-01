@@ -43,7 +43,6 @@ import berger_steak_client.composeapp.generated.resources.to_the_table
 import berger_steak_client.composeapp.generated.resources.total
 import com.alievisa.bergersteak.domain.models.BasketModel
 import com.alievisa.bergersteak.domain.models.RestaurantModel
-import com.alievisa.bergersteak.domain.models.mockRestaurants
 import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.common.TwoOptionSegmentedControl
 import com.alievisa.bergersteak.ui.theme.AppDefaults
@@ -57,6 +56,8 @@ fun DetailsContent(
     navController: NavController,
     basketModel: BasketModel,
     showInBottomSheet: Boolean = false,
+    restaurants: List<RestaurantModel>,
+    onPayButtonClick: () -> Unit,
 ) {
     val mainModifier = if (showInBottomSheet) {
         Modifier.wrapContentHeight().fillMaxWidth()
@@ -64,7 +65,6 @@ fun DetailsContent(
         Modifier.fillMaxSize()
     }
     var selectedOrderTypeIndex by remember { mutableStateOf(0) }
-    val restaurants = mockRestaurants
     var selectedRestaurant by remember { mutableStateOf(restaurants.first()) }
     var paymentState by remember { mutableStateOf(PaymentState.INITIAL) }
 
@@ -130,6 +130,7 @@ fun DetailsContent(
                 paymentState = PaymentState.SUCCESS
             }
             if (paymentState == PaymentState.SUCCESS) {
+                onPayButtonClick()
             }
         }
     }
