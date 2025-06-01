@@ -1,4 +1,4 @@
-package com.alievisa.bergersteak.ui.sheets
+package com.alievisa.bergersteak.ui.sheets.orderinfo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -1,4 +1,4 @@
-package com.alievisa.bergersteak.ui.sheets
+package com.alievisa.bergersteak.ui.sheets.dish
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background

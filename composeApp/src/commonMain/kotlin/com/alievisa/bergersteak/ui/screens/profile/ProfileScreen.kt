@@ -54,7 +54,7 @@ import com.alievisa.bergersteak.ui.common.DraggableBottomSheet
 import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.common.Toolbar
 import com.alievisa.bergersteak.ui.common.ToolbarButton
-import com.alievisa.bergersteak.ui.sheets.OrderInfoScreen
+import com.alievisa.bergersteak.ui.sheets.orderinfo.OrderInfoScreen
 import com.alievisa.bergersteak.ui.theme.AppDefaults
 import com.alievisa.bergersteak.ui.utils.ScaleIndication
 import com.alievisa.bergersteak.ui.utils.extensions.formatAsReadableDate

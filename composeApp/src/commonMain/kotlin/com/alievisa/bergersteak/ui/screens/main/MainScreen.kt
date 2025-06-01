@@ -45,10 +45,10 @@ import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.common.MenuList
 import com.alievisa.bergersteak.ui.common.ProfileButton
 import com.alievisa.bergersteak.ui.common.ToolbarButton
-import com.alievisa.bergersteak.ui.sheets.AboutUsContent
-import com.alievisa.bergersteak.ui.sheets.AuthContent
-import com.alievisa.bergersteak.ui.sheets.DishContent
-import com.alievisa.bergersteak.ui.sheets.OrderInfoScreen
+import com.alievisa.bergersteak.ui.sheets.aboutus.AboutUsContent
+import com.alievisa.bergersteak.ui.sheets.auth.AuthContent
+import com.alievisa.bergersteak.ui.sheets.dish.DishContent
+import com.alievisa.bergersteak.ui.sheets.orderinfo.OrderInfoScreen
 import com.alievisa.bergersteak.ui.utils.extensions.rub
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -206,9 +206,9 @@ fun MainScreenContent(
                 is MenuState.Content -> {
                     if (state.searchQuery.isBlank()) {
                         Column {
-                            if (MockUser.isAuthorized) {
+                            state.userState.userModel?.let { userModel ->
                                 ActiveOrdersList(
-                                    orders = MockUser.data.orders,
+                                    orders = userModel.orders,
                                     onOrderClick = { orderModel ->
                                         focusManager.clearFocus()
                                         keyboardController?.hide()

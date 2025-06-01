@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alievisa.bergersteak.domain.BergerSteakRepository
 import com.alievisa.bergersteak.domain.models.DishModel
-import com.alievisa.bergersteak.domain.onError
-import com.alievisa.bergersteak.domain.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,7 +18,6 @@ class BasketViewModel(
 
     init {
         collectBasket()
-        loadRestaurants()
     }
 
     fun onDoneDishClick(dishModel: DishModel, dishAmount: Int) {
@@ -56,18 +53,6 @@ class BasketViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun loadRestaurants() {
-        viewModelScope.launch {
-            repository.getRestaurants().onSuccess { restaurants ->
-                _state.update {
-                    it.copy(
-                        restaurants = restaurants
-                    )
-                }
-            }.onError {  }
         }
     }
 }

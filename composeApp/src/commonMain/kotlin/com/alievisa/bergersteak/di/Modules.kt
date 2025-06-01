@@ -9,6 +9,7 @@ import com.alievisa.bergersteak.domain.BergerSteakRepository
 import com.alievisa.bergersteak.getLocalBaseUrl
 import com.alievisa.bergersteak.ui.screens.basket.BasketViewModel
 import com.alievisa.bergersteak.ui.screens.main.MainViewModel
+import com.alievisa.bergersteak.ui.sheets.details.DetailsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -31,4 +32,5 @@ val sharedModule = module {
 
     viewModelOf(::MainViewModel)
     viewModelOf(::BasketViewModel)
+    viewModelOf(::DetailsViewModel)
 }

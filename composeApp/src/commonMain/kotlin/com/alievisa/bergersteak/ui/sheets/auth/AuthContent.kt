@@ -1,4 +1,4 @@
-package com.alievisa.bergersteak.ui.sheets
+package com.alievisa.bergersteak.ui.sheets.auth
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

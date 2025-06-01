@@ -1,4 +1,4 @@
-package com.alievisa.bergersteak.ui.sheets
+package com.alievisa.bergersteak.ui.sheets.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import berger_steak_client.composeapp.generated.resources.Res
 import berger_steak_client.composeapp.generated.resources.order_details
@@ -48,25 +48,25 @@ import com.alievisa.bergersteak.ui.common.TwoOptionSegmentedControl
 import com.alievisa.bergersteak.ui.theme.AppDefaults
 import com.alievisa.bergersteak.ui.utils.ScaleIndication
 import com.alievisa.bergersteak.ui.utils.extensions.rub
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DetailsContent(
+    viewModel: DetailsViewModel = koinViewModel(),
     navController: NavController,
     basketModel: BasketModel,
     showInBottomSheet: Boolean = false,
-    restaurants: List<RestaurantModel>,
     onPayButtonClick: () -> Unit,
 ) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     val mainModifier = if (showInBottomSheet) {
         Modifier.wrapContentHeight().fillMaxWidth()
     } else {
         Modifier.fillMaxSize()
     }
-    var selectedOrderTypeIndex by remember { mutableStateOf(0) }
-    var selectedRestaurant by remember { mutableStateOf(restaurants.first()) }
-    var paymentState by remember { mutableStateOf(PaymentState.INITIAL) }
 
     Column(
         modifier = mainModifier
@@ -85,19 +85,21 @@ fun DetailsContent(
 
         TwoOptionSegmentedControl(
             options = listOf(stringResource(Res.string.to_take_away), stringResource(Res.string.to_the_table)),
-            selectedIndex = selectedOrderTypeIndex,
-            onOptionSelected = { selectedOrderTypeIndex = it }
+            selectedIndex = state.selectedOrderTypeIndex,
+            onOptionSelected = { viewModel.onOrderTypeSelected(it) }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        RestaurantDropdown(
-            restaurants = restaurants,
-            selectedRestaurant = selectedRestaurant,
-            onRestaurantSelected = { selected ->
-                selectedRestaurant = selected
-            },
-        )
+        if (state.restaurants.isNotEmpty()) {
+            RestaurantDropdown(
+                restaurants = state.restaurants,
+                selectedIndex = state.selectedRestaurantIndex,
+                onIndexSelected = { selected ->
+                    viewModel.onRestaurantSelected(selected)
+                },
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -118,36 +120,24 @@ fun DetailsContent(
             modifier = Modifier
                 .padding(bottom = 12.dp),
             centerText = stringResource(Res.string.pay),
-            isLoading = paymentState == PaymentState.LOADING,
+            isLoading = state.paymentState == PaymentState.LOADING,
             onClick = {
-                paymentState = PaymentState.LOADING
+                viewModel.onPayButtonClick(basketModel, onPayButtonClick)
             }
         )
-
-        LaunchedEffect(paymentState) {
-            if (paymentState == PaymentState.LOADING) {
-                delay(2000)
-                paymentState = PaymentState.SUCCESS
-            }
-            if (paymentState == PaymentState.SUCCESS) {
-                onPayButtonClick()
-            }
-        }
     }
-}
-
-private enum class PaymentState {
-    INITIAL, LOADING, SUCCESS, ERROR
 }
 
 @Composable
 fun RestaurantDropdown(
     restaurants: List<RestaurantModel>,
     modifier: Modifier = Modifier,
-    selectedRestaurant: RestaurantModel,
-    onRestaurantSelected: (RestaurantModel) -> Unit
+    selectedIndex: Int,
+    onIndexSelected: (Int) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
+    val restaurantModel = restaurants[selectedIndex]
 
     Column(modifier = modifier) {
         Text(
@@ -175,7 +165,7 @@ fun RestaurantDropdown(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = selectedRestaurant.address,
+                    text = restaurantModel.address,
                     color = Color.Black,
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
@@ -192,10 +182,10 @@ fun RestaurantDropdown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                restaurants.forEach { restaurant ->
+                restaurants.forEachIndexed { index, restaurant ->
                     DropdownMenuItem(onClick = {
                         expanded = false
-                        onRestaurantSelected(restaurant)
+                        onIndexSelected(index)
                     }) {
                         Text(text = restaurant.address)
                     }

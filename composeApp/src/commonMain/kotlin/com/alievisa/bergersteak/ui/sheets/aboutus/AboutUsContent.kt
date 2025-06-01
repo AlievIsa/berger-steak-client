@@ -1,4 +1,4 @@
-package com.alievisa.bergersteak.ui.sheets
+package com.alievisa.bergersteak.ui.sheets.aboutus
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

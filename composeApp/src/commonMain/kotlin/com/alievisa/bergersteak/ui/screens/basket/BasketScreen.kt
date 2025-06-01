@@ -38,9 +38,9 @@ import com.alievisa.bergersteak.ui.common.DraggableBottomSheet
 import com.alievisa.bergersteak.ui.common.MainButton
 import com.alievisa.bergersteak.ui.common.Toolbar
 import com.alievisa.bergersteak.ui.common.ToolbarButton
-import com.alievisa.bergersteak.ui.sheets.AuthContent
-import com.alievisa.bergersteak.ui.sheets.DetailsContent
-import com.alievisa.bergersteak.ui.sheets.DishContent
+import com.alievisa.bergersteak.ui.sheets.auth.AuthContent
+import com.alievisa.bergersteak.ui.sheets.details.DetailsContent
+import com.alievisa.bergersteak.ui.sheets.dish.DishContent
 import com.alievisa.bergersteak.ui.utils.extensions.rub
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -104,7 +104,6 @@ fun BasketScreen(
                     navController = navController,
                     basketModel = state.basketModel,
                     showInBottomSheet = true,
-                    restaurants = state.restaurants,
                     onPayButtonClick = {
                         navController.navigate(Screen.Main) {
                             popUpTo(Screen.Main) { inclusive = true }
