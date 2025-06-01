@@ -16,6 +16,8 @@ import com.alievisa.bergersteak.domain.models.DishModel
 fun DishesList(
     dishes: List<DishModel>,
     isMainButtonVisible: Boolean,
+    onDishClick: (DishModel) -> Unit,
+    onAddDishClick: (DishModel) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -28,11 +30,15 @@ fun DishesList(
                 Modifier
                     .padding(horizontal = 12.dp)
             ) {
-                row.forEach { dish ->
+                row.forEach { dishModel ->
                     MenuItem(
-                        dishModel = dish,
-                        onDishClick = { },
-                        onAddDishClick = { },
+                        dishModel = dishModel,
+                        onDishClick = {
+                            onDishClick(dishModel)
+                        },
+                        onAddDishClick = {
+                            onAddDishClick(dishModel)
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }

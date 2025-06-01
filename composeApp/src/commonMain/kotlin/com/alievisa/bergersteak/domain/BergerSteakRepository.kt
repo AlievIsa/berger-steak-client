@@ -4,6 +4,7 @@ import com.alievisa.bergersteak.data.local.MainDao
 import com.alievisa.bergersteak.data.local.entities.PositionEntity
 import com.alievisa.bergersteak.data.mappers.toEntity
 import com.alievisa.bergersteak.data.mappers.toModel
+import com.alievisa.bergersteak.data.mappers.toRecommendationsRequest
 import com.alievisa.bergersteak.data.network.BergerSteakServer
 import com.alievisa.bergersteak.domain.models.BasketModel
 import com.alievisa.bergersteak.domain.models.CategoryModel
@@ -88,6 +89,10 @@ class BergerSteakRepository(
 
     suspend fun getRestaurants(): Result<List<RestaurantModel>, DataError.Remote> {
         return server.getRestaurants().map { it.toModel() }
+    }
+
+    suspend fun getRecommendations(basketModel: BasketModel): Result<List<DishModel>, DataError.Remote> {
+        return server.getRecommendations(basketModel.toRecommendationsRequest()).map { it.dishes.map { it.toModel() } }
     }
 }
 

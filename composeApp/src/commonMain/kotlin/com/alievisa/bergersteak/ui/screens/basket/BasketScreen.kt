@@ -2,8 +2,11 @@ package com.alievisa.bergersteak.ui.screens.basket
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import berger_steak_client.composeapp.generated.resources.Res
@@ -26,16 +32,17 @@ import berger_steak_client.composeapp.generated.resources.arrow_back
 import berger_steak_client.composeapp.generated.resources.bag
 import berger_steak_client.composeapp.generated.resources.basket
 import berger_steak_client.composeapp.generated.resources.delete_all
+import berger_steak_client.composeapp.generated.resources.good_addition_to_order
 import berger_steak_client.composeapp.generated.resources.options
 import berger_steak_client.composeapp.generated.resources.to_order
 import com.alievisa.bergersteak.domain.models.DishModel
 import com.alievisa.bergersteak.domain.models.MockUser
-import com.alievisa.bergersteak.domain.models.PositionModel
 import com.alievisa.bergersteak.ui.Screen
 import com.alievisa.bergersteak.ui.common.BasketItem
 import com.alievisa.bergersteak.ui.common.BottomSheetContent
 import com.alievisa.bergersteak.ui.common.DraggableBottomSheet
 import com.alievisa.bergersteak.ui.common.MainButton
+import com.alievisa.bergersteak.ui.common.MenuItem
 import com.alievisa.bergersteak.ui.common.Toolbar
 import com.alievisa.bergersteak.ui.common.ToolbarButton
 import com.alievisa.bergersteak.ui.sheets.auth.AuthContent
@@ -60,9 +67,8 @@ fun BasketScreen(
         onBackButtonClick = {
             navController.popBackStack()
         },
-        onDishClick = { positionModel ->
-            viewModel.onDoneDishClick(positionModel.dishModel, positionModel.dishAmount)
-            currentBottomSheetContent = BottomSheetContent.Dish(positionModel.dishModel)
+        onDishClick = { dishModel ->
+            currentBottomSheetContent = BottomSheetContent.Dish(dishModel)
         },
         onIncreaseAmountClick = { dishModel ->
             viewModel.onIncreaseDishAmountClick(dishModel)
@@ -79,7 +85,10 @@ fun BasketScreen(
         },
         onDeleteAllClick = {
             viewModel.clearBasket()
-        }
+        },
+        onAddDishClick = { dishModel ->
+            viewModel.onAddDishClick(dishModel)
+        },
     )
 
     DraggableBottomSheet(
@@ -148,9 +157,10 @@ fun BasketScreenContent(
     onBackButtonClick: () -> Unit,
     onIncreaseAmountClick: (DishModel) -> Unit,
     onDecreaseAmountClick: (DishModel) -> Unit,
-    onDishClick: (PositionModel) -> Unit,
+    onDishClick: (DishModel) -> Unit,
     onMainButtonClick: () -> Unit,
     onDeleteAllClick: () -> Unit,
+    onAddDishClick: (DishModel) -> Unit,
 ) {
     var isRightButtonExpanded by remember { mutableStateOf(false) }
 
@@ -192,16 +202,60 @@ fun BasketScreenContent(
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
+
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(20.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
             ) {
+                item { Spacer(modifier = Modifier.height(12.dp)) }
+
                 items(state.basketModel.positions) { positionModel ->
                     BasketItem(
+                        modifier = Modifier.padding(horizontal = 8.dp),
                         positionModel = positionModel,
                         onIncreaseAmountClick = { onIncreaseAmountClick(positionModel.dishModel) },
                         onDecreaseAmountClick = { onDecreaseAmountClick(positionModel.dishModel) },
-                        onDishClick = { onDishClick(positionModel) }
+                        onDishClick = { onDishClick(positionModel.dishModel) }
                     )
+                }
+
+                item {
+                    Text(
+                        text = stringResource(Res.string.good_addition_to_order),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 8.dp, bottom = 4.dp),
+                    )
+                }
+
+                when (state.recommendationsState) {
+                    is RecommendationsState.Content -> {
+
+                        items(state.recommendationsState.recommendations.chunked(2)) { row ->
+                            Row {
+                                row.forEach { dishModel ->
+                                    MenuItem(
+                                        dishModel = dishModel,
+                                        onDishClick = { onDishClick(dishModel) },
+                                        onAddDishClick = { onAddDishClick(dishModel) },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (row.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                    RecommendationsState.Loading -> item { RecommendationsShimmer() }
+                    RecommendationsState.Error -> {}
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(70.dp))
                 }
             }
 

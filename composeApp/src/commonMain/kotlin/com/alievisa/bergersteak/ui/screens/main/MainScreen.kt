@@ -237,6 +237,16 @@ fun MainScreenContent(
                             dishes = state.menuState.menuModel.toDishesList()
                                 .filter { it.name.contains(state.searchQuery, ignoreCase = true) },
                             isMainButtonVisible = state.basketModel.positions.isNotEmpty(),
+                            onDishClick = { dishModel ->
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                                onDishClick(dishModel)
+                            },
+                            onAddDishClick = { dishModel ->
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                                onAddDishClick(dishModel)
+                            },
                         )
                     }
 

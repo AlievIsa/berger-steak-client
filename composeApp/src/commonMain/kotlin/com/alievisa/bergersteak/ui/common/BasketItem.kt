@@ -96,9 +96,8 @@ fun BasketItem(
                         color = Color.Black,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
-
-                    Spacer(modifier.width(20.dp))
 
                     dishModel.weight?.let {
                         Text(
@@ -107,14 +106,10 @@ fun BasketItem(
                             color = Color.Gray,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
-
-
-
-                Spacer(modifier.width(20.dp))
 
                 QuantitySelector(
                     value = positionModel.dishAmount,

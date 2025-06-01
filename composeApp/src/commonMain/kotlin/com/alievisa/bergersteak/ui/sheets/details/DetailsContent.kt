@@ -91,15 +91,13 @@ fun DetailsContent(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (state.restaurants.isNotEmpty()) {
-            RestaurantDropdown(
-                restaurants = state.restaurants,
-                selectedIndex = state.selectedRestaurantIndex,
-                onIndexSelected = { selected ->
-                    viewModel.onRestaurantSelected(selected)
-                },
-            )
-        }
+        RestaurantDropdown(
+            restaurants = state.restaurants,
+            selectedIndex = state.selectedRestaurantIndex,
+            onIndexSelected = { selected ->
+                viewModel.onRestaurantSelected(selected)
+            },
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -137,7 +135,7 @@ fun RestaurantDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    val restaurantModel = restaurants[selectedIndex]
+    val restaurantModel = restaurants.getOrNull(selectedIndex)
 
     Column(modifier = modifier) {
         Text(
@@ -165,7 +163,7 @@ fun RestaurantDropdown(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = restaurantModel.address,
+                    text = restaurantModel?.address ?: "",
                     color = Color.Black,
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
